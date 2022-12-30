@@ -1,6 +1,13 @@
+SERVICIOS = {
+    'NF': 'Netflix',
+    'AP': 'Amazon Video',
+    'ST': 'Start+',
+    'PM': 'Paramount+',
+}
+
 async function getPayments() {
     try {
-      var response = await fetch('http://localhost:8000/pagos/', {
+      let response = await fetch('http://localhost:8000/pagos/', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
@@ -14,18 +21,18 @@ async function getPayments() {
   }
   
   function addPaymentRows(payments) {
-    var tbody = document.getElementById('payments-table');
-    tbody.innerHTML = '';
-    for (var i = 0; i < payments.length; i++) {
-      var payment = payments[i];
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + payment.date + '</td><td>' + payment.service + '</td><td>' + payment.user + '</td><td>' + payment.amount + '</td>';
+    let tbody = document.getElementById('payments-table');
+
+    for (let i = 0; i < payments?.results.length; i++) {
+      let payment = payments?.results[i];
+      let tr = document.createElement('tr');
+
+      tr.innerHTML = '<td>' + payment.fecha_pago + '</td><td>' + SERVICIOS[payment.servicio] + '</td><td>' + `S/ ${payment.monto}` + '</td>';
       tbody.appendChild(tr);
     }
   }
   
-  window.addEventListener('load', async function() {
-    var payments = await getPayments();
-    console.log(payments.results)
+  window.onload = async () => {
+    let payments = await getPayments();
     addPaymentRows(payments);
-  });
+  }
